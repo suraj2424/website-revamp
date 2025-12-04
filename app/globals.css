@@ -1,0 +1,333 @@
+@import "tailwindcss";
+
+:root {
+  /* Core Colors */
+  --background: #050505;
+  --foreground: #ffffff;
+  --primary: #D2FF00;
+  --secondary: #111112;
+  --muted: #0a0a0a;
+  
+  /* Animation Timings */
+  --duration-fast: 0.15s;
+  --duration-normal: 0.3s;
+  --duration-slow: 0.8s;
+  --duration-slower: 1.5s;
+  
+  /* Easing Functions */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+* {
+  cursor: none !important;
+}
+
+html {
+  scroll-padding-top: 0;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-outfit), system-ui, sans-serif;
+  overflow-x: hidden;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
+}
+
+/* Premium Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-syne), system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+  transition: background var(--duration-normal) var(--ease-smooth);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Selection Styling */
+::selection {
+  background: var(--primary);
+  color: black;
+}
+
+::-moz-selection {
+  background: var(--primary);
+  color: black;
+}
+
+/* Premium Focus Styles */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 4px;
+}
+
+/* Smooth Transitions for Interactive Elements */
+a, button, [role="button"] {
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+/* Neon/Accent Utilities */
+.text-neon {
+  color: var(--primary);
+}
+
+.bg-neon {
+  background-color: var(--primary);
+}
+
+.border-neon {
+  border-color: var(--primary);
+}
+
+.shadow-neon {
+  box-shadow: 0 0 30px rgba(210, 255, 0, 0.3);
+}
+
+.shadow-neon-lg {
+  box-shadow: 0 0 60px rgba(210, 255, 0, 0.4);
+}
+
+.glow-neon {
+  filter: drop-shadow(0 0 20px rgba(210, 255, 0, 0.5));
+}
+
+/* Typography Utilities */
+.font-display {
+  font-family: var(--font-syne), system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.font-body {
+  font-family: var(--font-outfit), system-ui, sans-serif;
+}
+
+.text-tight {
+  letter-spacing: -0.02em;
+}
+
+.text-tighter {
+  letter-spacing: -0.04em;
+}
+
+.leading-none {
+  line-height: 0.85;
+}
+
+.leading-tight {
+  line-height: 0.9;
+}
+
+/* Premium Text Effects */
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, #fff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-outline {
+  -webkit-text-stroke: 1px var(--primary);
+  color: transparent;
+}
+
+/* Animation Utilities */
+.animate-fade-up {
+  animation: fadeUp var(--duration-slow) var(--ease-out) forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-normal) var(--ease-spring) forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform var(--duration-normal) var(--ease-smooth);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 40px rgba(210, 255, 0, 0.4);
+}
+
+/* Card Styles */
+.card-premium {
+  background: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.card-premium:hover {
+  border-color: var(--primary);
+  background: rgba(210, 255, 0, 0.02);
+}
+
+/* Backdrop Effects */
+.backdrop-blur-premium {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Gradient Backgrounds */
+.bg-gradient-radial {
+  background: radial-gradient(circle at center, rgba(210, 255, 0, 0.1) 0%, transparent 70%);
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(180deg, var(--background) 0%, var(--muted) 100%);
+}
+
+/* Border Utilities */
+.border-subtle {
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.border-glow {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(210, 255, 0, 0.2);
+}
+
+/* Responsive Typography Scale */
+.text-hero {
+  font-size: clamp(3rem, 14vw, 20rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+}
+
+.text-section {
+  font-size: clamp(2.5rem, 8vw, 8rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.text-manifesto {
+  font-size: clamp(1.5rem, 5vw, 4.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0; /* Start hidden */
+  }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.bg-noise {
+  background-image: url("https://grainy-gradients.vercel.app/noise.svg");
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+/* Custom Cursor Styles */
+.cursor-body {
+  box-shadow: 
+    0 0 20px rgba(210, 255, 0, 0.6),
+    inset 0 2px 4px rgba(255, 255, 255, 0.4),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.glow-ring {
+  filter: blur(4px);
+}
+
+.glow-effect {
+  filter: blur(30px);
+}
+
+.wing-shadow {
+  filter: drop-shadow(0 0 8px rgba(210, 255, 0, 0.5));
+}
+
+/* Custom Cursor Hide Styles */
+@media (min-width: 769px) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
+/* ToggleSection Styles */
+.toggle-container {
+  clip-path: polygon(0 0, 100% 0, 100% 95%, 97% 100%, 0 100%);
+}
+
+.dot-pattern {
+  background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.08) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.outside-layer-hidden {
+  clip-path: inset(100% 0% 0% 0%);
+}
