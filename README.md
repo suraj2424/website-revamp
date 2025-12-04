@@ -58,9 +58,8 @@ The goal is to revamp Alcovia’s digital experience with a **high-energy, premi
 
 ## Screenshots
 
-Preview images of the implementation are available in:
+Custom preview images of the implementation are available in:
 
-- `public/pages/full-page.png` – full-page visual overview.
 - `public/pages/not-found.png` – custom 404 / not-found page preview.
 
 You can use these for quick visual reference or when sharing the project.
