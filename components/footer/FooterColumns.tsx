@@ -78,6 +78,7 @@ export function BrandingColumn() {
             width={140} 
             height={50}
             className="brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity"
+            style={{ width: 'auto', height: 'auto' }}
           />
           <div className="absolute -inset-6 bg-[#D2FF00]/0 group-hover:bg-[#D2FF00]/10 rounded-3xl blur-2xl transition-all duration-500 -z-10" />
         </div>

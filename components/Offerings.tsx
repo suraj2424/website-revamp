@@ -17,34 +17,37 @@ export default function Offerings() {
     const section = sectionRef.current;
     if (!section) return;
 
-    // Set initial states with GSAP (not Tailwind)
-    gsap.set('.offerings-header', { opacity: 0, y: 30 });
-    gsap.set('.offering-card', { opacity: 0, y: 40 });
-
     const ctx = gsap.context(() => {
+      const header = section.querySelector('.offerings-header');
+      const cards = gsap.utils.toArray<HTMLElement>('.offering-card');
+
+      // Initial state (scoped to this section)
+      gsap.set(header, { opacity: 0, y: 24 });
+      gsap.set(cards, { opacity: 0, y: 32 });
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: 'top 75%',
           once: true,
         },
+        defaults: { ease: 'power3.out' },
       });
 
-      tl.to('.offerings-header', {
+      tl.to(header, {
         y: 0,
         opacity: 1,
-        duration: 0.7,
-        ease: 'power3.out',
+        duration: 0.55,
       }).to(
-        '.offering-card',
+        cards,
         {
-          opacity: 1,
           y: 0,
-          duration: 0.5,
-          stagger: 0.06,
+          opacity: 1,
+          duration: 0.4,
+          stagger: 0.05,
           ease: 'power2.out',
         },
-        '-=0.3'
+        '-=0.25'
       );
     }, section);
 
@@ -59,7 +62,6 @@ export default function Offerings() {
     >
       <OfferingsHeader />
 
-      {/* Grid Layout */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 auto-rows-[280px] md:auto-rows-[300px]">
         {OFFERINGS_DATA.map((item) => (
           <div

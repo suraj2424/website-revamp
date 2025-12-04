@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Syne, Outfit } from "next/font/google";
 import "./globals.css";
@@ -23,12 +24,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" className={`${syne.variable} ${outfit.variable}`}>
-      <body className="font-sans antialiased bg-black text-white selection:bg-[#D2FF00] selection:text-black">
+      <body className="font-sans antialiased bg-[#050505] text-white selection:bg-[#D2FF00] selection:text-black">
         <CustomCursor />
         <SmoothScroll>{children}</SmoothScroll>
       </body>

@@ -9,7 +9,7 @@ import Navbar from '@/components/Navbar';
 
 export default function Home() {
   return (
-    <main className="bg-[#050505] text-white overflow-x-hidden">
+    <main className="text-white">
       <Navbar />
       <Hero />
       <Manifesto />
