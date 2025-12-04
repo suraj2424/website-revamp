@@ -1,3 +1,4 @@
+// components/Hero.tsx
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -8,6 +9,12 @@ import HeroContent from './hero/HeroContent';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const SELECTORS = {
+  heading: '.hero-anim-heading',
+  sub: '.hero-anim-sub',
+  cta: '.hero-anim-cta',
+} as const;
+
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -15,101 +22,67 @@ export default function Hero() {
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const container = containerRef.current;
+    const bg = bgRef.current;
+    const content = contentRef.current;
+    const scrollIndicator = scrollIndicatorRef.current;
+
+    if (!container || !bg || !content || !scrollIndicator) return;
+
     const ctx = gsap.context(() => {
-      // Selectors
-      const heading = '.hero-anim-heading';
-      const badge = '.hero-anim-badge';
-      const sub = '.hero-anim-sub';
-      const cta = '.hero-anim-cta';
+      gsap.set(container, { opacity: 1 });
 
-      // ============================================
-      // 1. INTRO ANIMATION (Enter Viewport)
-      // ============================================
-      const introTl = gsap.timeline({
-        defaults: { ease: "power3.out" }
-      });
+      // Intro animation
+      const tl = gsap.timeline({ defaults: { ease: 'power2.out' } });
 
-      // Force initial visible state logic for the intro
-      introTl
-        .to(containerRef.current, { opacity: 1, duration: 0.1 })
-        .to(badge, { opacity: 1, y: 0, duration: 0.8 }, 0.2)
-        .to(heading, { opacity: 1, y: 0, scale: 1, duration: 1, ease: "power4.out" }, 0.3)
-        .to(sub, { opacity: 1, y: 0, duration: 0.8 }, 0.6)
-        .to(cta, { opacity: 1, y: 0, duration: 0.8 }, 0.8)
-        .to(scrollIndicatorRef.current, { opacity: 1, y: 0, duration: 0.8 }, 1.0);
+      tl.fromTo(
+        SELECTORS.heading,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.6 }
+      )
+        .fromTo(
+          SELECTORS.sub,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5 },
+          '-=0.3'
+        )
+        .fromTo(
+          SELECTORS.cta,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5 },
+          '-=0.3'
+        )
+        .fromTo(
+          scrollIndicator,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.4 },
+          '-=0.2'
+        );
 
+      // Scroll animation
+      ScrollTrigger.create({
+        trigger: container,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.5,
+        onUpdate: ({ progress }) => {
+          gsap.set(bg, { yPercent: progress * 15 });
+          gsap.set(content, { yPercent: progress * -10 });
 
-      // ============================================
-      // 2. PARALLAX EFFECT (Background)
-      // ============================================
-      gsap.to(bgRef.current, {
-        yPercent: 20,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0
-        }
-      });
+          if (progress > 0.15) {
+            const fadeProgress = (progress - 0.15) / 0.35;
+            const opacity = Math.max(0, 1 - fadeProgress);
+            gsap.set([SELECTORS.heading, SELECTORS.sub, SELECTORS.cta], {
+              opacity,
+            });
+          }
 
-      // Content moves UP faster
-      gsap.to(contentRef.current, {
-        yPercent: -15,
-        ease: "none",
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: 0
-        }
-      });
-
-
-      // ============================================
-      // 3. EXIT ANIMATION (The Fix)
-      // ============================================
-      
-      // FIX: Use .fromTo() to explicitly define the "Start" state as fully visible (opacity: 1).
-      // immediateRender: false ensures this doesn't run until the scroll actually happens.
-      gsap.fromTo([heading, sub, cta], 
-        { 
-          opacity: 1, 
-          scale: 1, 
-          filter: 'blur(0px)' 
+          gsap.set(scrollIndicator, {
+            opacity: Math.max(0, 1 - progress * 8),
+          });
         },
-        {
-          opacity: 0,
-          scale: 0.95,
-          filter: 'blur(8px)',
-          stagger: 0.05,
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "100px top", // Start fading only after scrolling 100px down
-            end: "60% top",
-            scrub: true,
-            immediateRender: false 
-          }
-        }
-      );
-
-      // FIX: Same logic for Scroll Indicator
-      gsap.fromTo(scrollIndicatorRef.current,
-        { opacity: 1, y: 0 },
-        {
-          opacity: 0,
-          y: 20,
-          scrollTrigger: {
-            trigger: containerRef.current,
-            start: "10px top", // Start immediately upon scroll
-            end: "150px top",
-            scrub: true,
-            immediateRender: false
-          }
-        }
-      );
-
-    }, containerRef);
+      });
+    }, container);
 
     return () => ctx.revert();
   }, []);
@@ -118,31 +91,31 @@ export default function Hero() {
     <section
       id="hero"
       ref={containerRef}
-      className="relative h-[100dvh] min-h-[600px] w-full overflow-hidden bg-[#050505] opacity-0 invisible"
-      style={{ visibility: 'visible' }}
+      className="relative h-dvh min-h-[600px] w-full overflow-hidden bg-[#050505]"
+      style={{ opacity: 0 }}
     >
-      
-      {/* 1. Background Component */}
       <HeroBackground bgRef={bgRef} />
-
-      {/* 2. Content Component */}
-      <HeroContent ref={contentRef} />
-
-      {/* 3. Scroll Indicator */}
+      
+      {/* Content wrapper - properly centered */}
       <div
-        ref={scrollIndicatorRef}
-        className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-30 pointer-events-none opacity-0 translate-y-10"
+        ref={contentRef}
+        className="absolute inset-0 z-10 flex items-center justify-center pt-16 pb-24 px-6"
       >
-        <div className="flex flex-col items-center gap-3">
-          <span className="text-[8px] md:text-[9px] uppercase tracking-[0.25em] text-gray-500 font-medium opacity-80">
-            Scroll
-          </span>
-          <div className="relative w-[18px] h-[28px] md:w-[20px] md:h-[32px] rounded-full border border-gray-600/50 flex items-start justify-center p-1">
-            <div className="w-1 h-1.5 bg-[#D2FF00] rounded-full animate-bounce" />
-          </div>
-        </div>
+        <HeroContent />
       </div>
 
+      {/* Scroll Indicator */}
+      <div
+        ref={scrollIndicatorRef}
+        className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2"
+      >
+        <span className="text-[9px] uppercase tracking-[0.2em] text-white/40">
+          Scroll
+        </span>
+        <div className="w-5 h-8 rounded-full border border-white/20 flex justify-center pt-2">
+          <div className="w-1 h-1.5 bg-[#D2FF00] rounded-full animate-bounce" />
+        </div>
+      </div>
     </section>
   );
 }

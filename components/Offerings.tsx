@@ -1,3 +1,4 @@
+// components/Offerings.tsx
 'use client';
 
 import { useEffect, useRef } from 'react';
@@ -13,69 +14,62 @@ export default function Offerings() {
   const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    // Set initial states with GSAP (not Tailwind)
+    gsap.set('.offerings-header', { opacity: 0, y: 30 });
+    gsap.set('.offering-card', { opacity: 0, y: 40 });
+
     const ctx = gsap.context(() => {
-      
-      // 1. Header Reveal
-      gsap.to('.offerings-header', {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 75%',
+          once: true,
+        },
+      });
+
+      tl.to('.offerings-header', {
         y: 0,
         opacity: 1,
-        duration: 1,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-        }
-      });
-
-      // 2. Grid Items Reveal (FIXED)
-      // We now target '.offering-wrapper' which is the element that is actually hidden
-      ScrollTrigger.batch('.offering-wrapper', {
-        start: "top 85%",
-        onEnter: (batch) => {
-          gsap.to(batch, {
-            opacity: 1, 
-            y: 0,
-            duration: 0.8,
-            stagger: 0.1,
-            ease: "power3.out",
-            overwrite: true
-          });
+        duration: 0.7,
+        ease: 'power3.out',
+      }).to(
+        '.offering-card',
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.5,
+          stagger: 0.06,
+          ease: 'power2.out',
         },
-        once: true
-      });
-
-    }, sectionRef);
+        '-=0.3'
+      );
+    }, section);
 
     return () => ctx.revert();
   }, []);
 
   return (
-    <section 
-      ref={sectionRef} 
-      id="offerings" 
-      className="relative min-h-screen bg-[#050505] py-24 px-4 md:px-8 overflow-hidden"
+    <section
+      ref={sectionRef}
+      id="offerings"
+      className="relative min-h-screen bg-[#050505] py-24 px-4 md:px-8"
     >
-      {/* Background Noise Texture */}
-      <div 
-        className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
-        style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}
-      />
-      
       <OfferingsHeader />
 
       {/* Grid Layout */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 auto-rows-[280px] md:auto-rows-[300px]">
         {OFFERINGS_DATA.map((item) => (
-          // FIXED: Added 'offering-wrapper' class here so GSAP finds the invisible parent
-          <div 
-            key={item.id} 
-            className={`offering-wrapper opacity-0 translate-y-12 ${item.span || 'md:col-span-1'}`}
+          <div
+            key={item.id}
+            className={`offering-card ${item.span || ''}`}
           >
             <OfferingCard item={item} />
           </div>
         ))}
       </div>
-
     </section>
   );
 }

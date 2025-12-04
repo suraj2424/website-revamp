@@ -1,42 +1,41 @@
+// components/SmoothScroll.tsx
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Lenis from "lenis";
-import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import gsap from "gsap";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function SmoothScroll({ children }: { children: React.ReactNode }) {
-    useEffect(() => {
-        const lenis = new Lenis({
-            duration: 1.2,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            orientation: "vertical",
-            gestureOrientation: "vertical",
-            smoothWheel: true,
-            wheelMultiplier: 1,
-            touchMultiplier: 2,
-        });
+  const [shouldSmooth, setShouldSmooth] = useState(true);
 
-        // Synchronize Lenis scroll with GSAP ScrollTrigger
-        lenis.on("scroll", ScrollTrigger.update);
+  useEffect(() => {
+    // Disable on mobile or reduced motion preference
+    const isMobile = window.innerWidth < 768;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    if (isMobile || prefersReducedMotion) {
+      setShouldSmooth(false);
+      return;
+    }
 
-        // Use GSAP's ticker to drive Lenis animations for better sync
-        gsap.ticker.add((time) => {
-            lenis.raf(time * 1000);
-        });
+    const lenis = new Lenis({
+      duration: 1,
+      smoothWheel: true,
+    });
 
-        // Disable lag smoothing in GSAP to prevent jumps
-        gsap.ticker.lagSmoothing(0);
+    lenis.on("scroll", ScrollTrigger.update);
 
-        return () => {
-            lenis.destroy();
-            gsap.ticker.remove((time) => {
-                lenis.raf(time * 1000);
-            });
-        };
-    }, []);
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
 
-    return <>{children}</>;
+    return () => lenis.destroy();
+  }, []);
+
+  return <>{children}</>;
 }
